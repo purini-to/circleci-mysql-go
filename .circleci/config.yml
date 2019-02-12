@@ -30,7 +30,7 @@ jobs: # basic units of work in a run
             for i in `seq 1 60`;
             do
               docker ps
-              nc -z localhost 3306 && echo Success && isOk=true
+              nc -z 127.0.0.1 3306 && echo Success && isOk=true
               echo -n .
               sleep 1
             done
