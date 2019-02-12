@@ -17,6 +17,8 @@ jobs: # basic units of work in a run
           keys:
             - v1-pkg-cache
 
+      - run: go get -v github.com/rubenv/sql-migrate/...
+
       #  CircleCi's Go Docker image includes netcat
       #  This allows polling the DB port to confirm it is open before proceeding
       - run:
@@ -34,7 +36,7 @@ jobs: # basic units of work in a run
           name: Run migrations
           # Store the results of our tests in the $TEST_RESULTS directory
           command: |
-            ./bin/sql-migrate up -config=./migration.yaml -env=test
+            sql-migrate up -config=./migration.yaml -env=test
 
       - run:
           name: Run unit tests
