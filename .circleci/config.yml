@@ -35,7 +35,8 @@ jobs: # basic units of work in a run
           name: Run migrations
           # Store the results of our tests in the $TEST_RESULTS directory
           command: |
-            ./bin/migrate -source ./migrations -database "mysql://root:@/circle_test?charset=utf8mb4&parseTime=True" up
+#            ./bin/migrate -source ./migrations -database "mysql://root:@/circle_test?charset=utf8mb4&parseTime=True" up
+            docker run --rm boxfuse/flyway -url=jdbc:h2:mem:test -user=sa info
 
       - run:
           name: Run unit tests
