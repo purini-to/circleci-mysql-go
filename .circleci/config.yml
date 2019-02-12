@@ -53,4 +53,4 @@ jobs: # basic units of work in a run
       - save_cache: # Store cache in the /go/pkg directory
           key: v1-pkg-cache
           paths:
-            - "/go/pkg"
+            - "/go"

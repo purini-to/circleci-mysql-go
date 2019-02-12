@@ -1,5 +1,5 @@
 test:
   dialect: mysql
-  datasource: root:@/circle_test?charset=utf8mb4&parseTime=true&loc=Asia%2FTokyo&useSSL=false
+  datasource: root:@/circle_test?charset=utf8mb4&parseTime=true&loc=Asia%2FTokyo
   dir: migrations/mysql
   table: migrations
