@@ -12,6 +12,6 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	defer db.Close()
+	defer db.Close() // test
 	service.Query(db)
 }
