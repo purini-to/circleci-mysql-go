@@ -12,7 +12,7 @@ jobs: # basic units of work in a run
       - restore_cache: # restores saved cache if no changes are detected since last run
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           keys:
-            - v1-pkg-cache
+            - v2-pkg-cache
 
       - run: (cd $GOPATH; go get -v github.com/rubenv/sql-migrate/...)
 
@@ -51,6 +51,6 @@ jobs: # basic units of work in a run
             go build # pull and build dependencies for the project
 
       - save_cache: # Store cache in the /go/pkg directory
-          key: v1-pkg-cache
+          key: v2-pkg-cache
           paths:
             - "/go/pkg"
