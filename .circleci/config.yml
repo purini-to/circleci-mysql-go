@@ -1,7 +1,6 @@
 version: 2 # use CircleCI 2.0
 jobs: # basic units of work in a run
   build: # runs not using Workflows must have a `build` job as entry point
-    machine: true
     docker: # run the steps with Docker
       # CircleCI Go images available at: https://hub.docker.com/r/circleci/golang/
       - image: circleci/golang:1.11 #
@@ -33,10 +32,10 @@ jobs: # basic units of work in a run
             echo Failed waiting for Mysql && exit 1
 
       - run:
-          name: Run migrations
+          name: Run maigrations
           # Store the results of our tests in the $TEST_RESULTS directory
           command: |
-            docker run --rm boxfuse/flyway -url=jdbc:h2:mem:test -user=sa info
+            ./bin/migrate -source ./migrations -database "mysql://root:@/circle_test?charset=utf8mb4&parseTime=True" up
 
       - run:
           name: Run unit tests
