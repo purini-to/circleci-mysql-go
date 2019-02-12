@@ -9,12 +9,12 @@ jobs: # basic units of work in a run
       GO111MODULE: "on"
 
     steps: # steps that comprise the `build` job
+      - setup_remote_docker:
+          docker_layer_caching: true
+
       - run: docker run --rm --name circledb -p 3306:3306 circleci/mysql:5.6
 
       - checkout # check out source code to working directory
-
-      - setup_remote_docker:   # (2)
-          docker_layer_caching: true # (3)
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
