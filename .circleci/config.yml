@@ -4,7 +4,7 @@ jobs: # basic units of work in a run
     docker: # run the steps with Docker
       # CircleCI Go images available at: https://hub.docker.com/r/circleci/golang/
       - image: circleci/golang:1.11 #
-      - image: circleci/mysql:5.6
+#      - image: circleci/mysql:5.6
 
     environment: # environment variables for the build itself
       GO111MODULE: "on"
@@ -13,12 +13,6 @@ jobs: # basic units of work in a run
       - setup_remote_docker:
           docker_layer_caching: true
 
-#      - run:
-#          name: Running MySQL
-#          command: |
-#            docker run --rm --name circledb -p 3306:3306 circleci/mysql:5.6
-#          background: true
-
       - checkout # check out source code to working directory
 
       - restore_cache: # restores saved cache if no changes are detected since last run
@@ -26,30 +20,25 @@ jobs: # basic units of work in a run
           keys:
             - v1-pkg-cache
 
-      #  CircleCi's Go Docker image includes netcat
-      #  This allows polling the DB port to confirm it is open before proceeding
-      - run:
-          name: Waiting for Mysql to be ready
-          command: |
-            for i in `seq 1 120`;
-            do
-              docker ps
-              nc -z localhost 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for Mysql && exit 1
-
-      - run:
-          name: Run migrations
-          # Store the results of our tests in the $TEST_RESULTS directory
-          command: |
-            docker run --rm --link circledb:circledb -v `pwd`/migrations:/flyway/sql  boxfuse/flyway -user=root -url="jdbc:mysql://circledb/circle_test?useSSL=false" migrate
-
       - run:
           name: Run unit tests
           # Store the results of our tests in the $TEST_RESULTS directory
           command: |
+            docker run --rm -d --name circledb -p 3306:3306 circleci/mysql:5.6
+
+            isOk=false
+            for i in `seq 1 60`;
+            do
+              nc -z localhost 3306 && echo Success && isOk=true
+              echo -n .
+              sleep 1
+            done
+            if ! $isOk; then
+              echo Failed waiting for Mysql && exit 1
+            fi
+
+            docker run --rm --link circledb:circledb -v `pwd`/migrations:/flyway/sql  boxfuse/flyway -user=root -url="jdbc:mysql://circledb/circle_test?useSSL=false" migrate
+
             go test -v ./...
 
       - run: go build # pull and build dependencies for the project
