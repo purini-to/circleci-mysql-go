@@ -34,9 +34,6 @@ jobs: # basic units of work in a run
               echo -n .
               sleep 1
             done
-            if ! $isOk; then
-              echo Failed waiting for Mysql && docker ps && exit 1
-            fi
 
             docker run --rm --link circledb:circledb -v `pwd`/migrations:/flyway/sql  boxfuse/flyway -user=root -url="jdbc:mysql://circledb/circle_test?useSSL=false" migrate
 
