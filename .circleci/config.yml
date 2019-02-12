@@ -12,7 +12,7 @@ jobs: # basic units of work in a run
       - setup_remote_docker:
           docker_layer_caching: true
 
-      - run: docker run --rm --name circledb -p 3306:3306 circleci/mysql:5.6
+      - run: docker run -d --rm --name circledb -p 3306:3306 circleci/mysql:5.6
 
       - checkout # check out source code to working directory
 
