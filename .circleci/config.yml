@@ -37,7 +37,8 @@ jobs: # basic units of work in a run
           name: Run migrations
           # Store the results of our tests in the $TEST_RESULTS directory
           command: |
-            docker run --rm --net host -v `pwd`/migrations:/flyway/sql  boxfuse/flyway -user=root -url="jdbc:mysql://127.0.0.1/circle_test?useSSL=false" migrate
+            docker network ls
+            docker run --rm --net host -v `pwd`/migrations:/flyway/sql  boxfuse/flyway -user=root -url="jdbc:mysql://localhost/circle_test?useSSL=false" migrate
 
       - run:
           name: Run unit tests
