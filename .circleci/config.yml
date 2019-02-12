@@ -10,9 +10,6 @@ jobs: # basic units of work in a run
       GO111MODULE: "on"
 
     steps: # steps that comprise the `build` job
-      - setup_remote_docker:
-          docker_layer_caching: true
-
       - checkout # check out source code to working directory
 
       - restore_cache: # restores saved cache if no changes are detected since last run
@@ -37,7 +34,7 @@ jobs: # basic units of work in a run
           name: Run migrations
           # Store the results of our tests in the $TEST_RESULTS directory
           command: |
-            docker run --rm --net="host" -v `pwd`/migrations:/flyway/sql  boxfuse/flyway -user=root -url="jdbc:mysql://localhost/circle_test?useSSL=false" migrate
+            ./bin/sql-migrate up -config=./migration.yaml -env=test
 
       - run:
           name: Run unit tests
