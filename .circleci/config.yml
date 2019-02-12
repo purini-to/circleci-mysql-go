@@ -17,7 +17,7 @@ jobs: # basic units of work in a run
           keys:
             - v1-pkg-cache
 
-      - run: go get -v github.com/rubenv/sql-migrate/...
+      - run: go get github.com/rubenv/sql-migrate/...
 
       #  CircleCi's Go Docker image includes netcat
       #  This allows polling the DB port to confirm it is open before proceeding
