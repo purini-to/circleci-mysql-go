@@ -15,7 +15,7 @@ jobs: # basic units of work in a run
       - run:
           name: Running MySQL
           command: |
-            docker run -d --rm --name circledb -p 3306:3306 circleci/mysql:5.6
+            docker run --rm --name circledb -p 3306:3306 circleci/mysql:5.6
           background: true
 
       - checkout # check out source code to working directory
@@ -32,6 +32,7 @@ jobs: # basic units of work in a run
           command: |
             for i in `seq 1 120`;
             do
+              docker ps
               nc -z localhost 3306 && echo Success && exit 0
               echo -n .
               sleep 1
