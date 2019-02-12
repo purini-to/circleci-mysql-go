@@ -4,13 +4,13 @@ jobs: # basic units of work in a run
     docker: # run the steps with Docker
       # CircleCI Go images available at: https://hub.docker.com/r/circleci/golang/
       - image: circleci/golang:1.11 #
-      # CircleCI PostgreSQL images available at: https://hub.docker.com/r/circleci/postgres/
-      - image: circleci/mysql:5.6
 
     environment: # environment variables for the build itself
       GO111MODULE: "on"
 
     steps: # steps that comprise the `build` job
+      - run: docker run --rm --name circledb -p 3306:3306 circleci/mysql:5.6
+
       - checkout # check out source code to working directory
 
       - setup_remote_docker:   # (2)
@@ -20,8 +20,6 @@ jobs: # basic units of work in a run
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           keys:
             - v1-pkg-cache
-
-      - run: docker ps
 
       #  CircleCi's Go Docker image includes netcat
       #  This allows polling the DB port to confirm it is open before proceeding
@@ -35,6 +33,12 @@ jobs: # basic units of work in a run
               sleep 1
             done
             echo Failed waiting for Mysql && exit 1
+
+      - run:
+          name: Run migrations
+          # Store the results of our tests in the $TEST_RESULTS directory
+          command: |
+            docker run --rm --link circledb:circledb -v `pwd`/migrations:/flyway/sql  boxfuse/flyway -user=root -url="jdbc:mysql://circledb/circle_test?useSSL=false" migrate
 
       - run:
           name: Run unit tests
