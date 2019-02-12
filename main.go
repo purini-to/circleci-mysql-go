@@ -12,6 +12,6 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	defer db.Close() // 関数がリターンする直前に呼び出される
+	defer db.Close()
 	service.Query(db)
 }
